@@ -1,0 +1,822 @@
+{
+	"info": {
+		"_postman_id": "556d8d96-eb7d-4ff0-b67e-c8c9fc27a4ab",
+		"name": "Aluco",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26848780"
+	},
+	"item": [
+		{
+			"name": "Utils",
+			"item": [
+				{
+					"name": "200 - Admin idToken",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Get token from Firebase\", function() {",
+									"    var jsonData = JSON.parse(responseBody);",
+									"    pm.collectionVariables.set(\"USER_FIREBASE_ID_TOKEN\", jsonData.idToken);",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\" : \"{{ADMIN_EMAIL}}\",\n    \"password\" : \"{{ADMIN_PASSWORD}}\",\n    \"returnSecureToken\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key={{FIREBASE_API_TOKEN}}",
+							"protocol": "https",
+							"host": [
+								"www",
+								"googleapis",
+								"com"
+							],
+							"path": [
+								"identitytoolkit",
+								"v3",
+								"relyingparty",
+								"verifyPassword"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{FIREBASE_API_TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "200 - SuperAdmin idToken",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Get token from Firebase\", function() {",
+									"    var jsonData = JSON.parse(responseBody);",
+									"    pm.collectionVariables.set(\"USER_FIREBASE_ID_TOKEN\", jsonData.idToken);",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\" : \"{{SUPERADMIN_EMAIL}}\",\n    \"password\" : \"{{SUPERADMIN_PASSWORD}}\",\n    \"returnSecureToken\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key={{FIREBASE_API_TOKEN}}",
+							"protocol": "https",
+							"host": [
+								"www",
+								"googleapis",
+								"com"
+							],
+							"path": [
+								"identitytoolkit",
+								"v3",
+								"relyingparty",
+								"verifyPassword"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{FIREBASE_API_TOKEN}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "201 - Create User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function() {",
+									"    var jsonData = JSON.parse(responseBody);",
+									"    pm.collectionVariables.set(\"USER_ID\", jsonData.uid);",
+									"    pm.collectionVariables.set(\"USER_ID_TO_DELETE\", jsonData.uid);",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{USER_FIREBASE_ID_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n    \"email\": \"{{USER_EMAIL}}\",\n    \"password\": \"{{USER_PASSWORD}}\",\n    \"confirmPassword\" : \"{{USER_CONFIRM_PASSWORD}}\",\n    \"roles\" : [\"dashboard\", \"darfnichtgesetztwerden\"],\n    \"shippingCompanyId\" : \"123456789ABCD\",\n    \"shippingCompanyName\" : \"Company ABCD\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SERVER_URL}}:{{SERVER_PORT}}/api/companies/123456789ABCD/users",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"port": "{{SERVER_PORT}}",
+							"path": [
+								"api",
+								"companies",
+								"123456789ABCD",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "201 - Delete User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function() {",
+									"    var jsonData = JSON.parse(responseBody);",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{USER_FIREBASE_ID_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SERVER_URL}}:{{SERVER_PORT}}/api/companies/123456789abcdefg/users/{{USER_ID_TO_DELETE}}",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"port": "{{SERVER_PORT}}",
+							"path": [
+								"api",
+								"companies",
+								"123456789abcdefg",
+								"users",
+								"{{USER_ID_TO_DELETE}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "200 - Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function() {",
+									"    var jsonData = JSON.parse(responseBody);",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{USER_FIREBASE_ID_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SERVER_URL}}:{{SERVER_PORT}}/api/users/login",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"port": "{{SERVER_PORT}}",
+							"path": [
+								"api",
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "201 - Update User Info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function() {",
+									"    var jsonData = JSON.parse(responseBody);",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{USER_FIREBASE_ID_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n    \"email\": \"{{USER_EMAIL}}\",\n    \"password\": \"{{USER_PASSWORD}}\",\n    \"confirmPassword\" : \"{{USER_CONFIRM_PASSWORD}}\",\n    \"roles\" : [\"dashboard\", \"masterdata\", \"mussIgnoriertWerden\", \"admin\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SERVER_URL}}:{{SERVER_PORT}}/api/companies/123456789ABCD/users/{{USER_ID_TO_DELETE}}",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"port": "{{SERVER_PORT}}",
+							"path": [
+								"api",
+								"companies",
+								"123456789ABCD",
+								"users",
+								"{{USER_ID_TO_DELETE}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "201 - Get User List",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function() {",
+									"    var jsonData = JSON.parse(responseBody);",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{USER_FIREBASE_ID_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SERVER_URL}}:{{SERVER_PORT}}/api/companies/123456789ABCD/users",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"port": "{{SERVER_PORT}}",
+							"path": [
+								"api",
+								"companies",
+								"123456789ABCD",
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "SuperAdmin",
+			"item": [
+				{
+					"name": "201 - Create Shipping Company and Admin User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{USER_FIREBASE_ID_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\" : \"{{ADMIN_EMAIL}}\",\n    \"password\" : \"{{ADMIN_PASSWORD}}\",\n    \"confirmPassword\" : \"{{ADMIN_PASSWORD}}\",\n    \"shippingCompanyId\" : \"123456789ABCD\",\n    \"shippingCompanyName\" : \"Company ABCD\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SERVER_URL}}:{{SERVER_PORT}}/api/admin/companies",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"port": "{{SERVER_PORT}}",
+							"path": [
+								"api",
+								"admin",
+								"companies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "201 - Update Shipping Company and Admin User Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{USER_FIREBASE_ID_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\" : \"admin@company.de\",\n    \"password\" : \"SecretPW123!\",\n    \"confirmPassword\" : \"SecretPW123!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SERVER_URL}}:{{SERVER_PORT}}/api/admin/companies/hierAdminIDübergeben",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"port": "{{SERVER_PORT}}",
+							"path": [
+								"api",
+								"admin",
+								"companies",
+								"hierAdminIDübergeben"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "200 - Delete Admin And Company",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{USER_FIREBASE_ID_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"shippingCompanyId\" : \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SERVER_URL}}:{{SERVER_PORT}}/api/admin/companies/adminId",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"port": "{{SERVER_PORT}}",
+							"path": [
+								"api",
+								"admin",
+								"companies",
+								"adminId"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "200 - Get All Admin Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER_URL}}:{{SERVER_PORT}}/api/admin/companies",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"port": "{{SERVER_PORT}}",
+							"path": [
+								"api",
+								"admin",
+								"companies"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{USER_FIREBASE_ID_TOKEN}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Upload",
+			"item": [
+				{
+					"name": "200 - Upload File",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{USER_FIREBASE_ID_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "data-import",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{SERVER_URL}}:{{SERVER_PORT}}/api/companies/shippingCompanyIdGoesHere/upload",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"port": "{{SERVER_PORT}}",
+							"path": [
+								"api",
+								"companies",
+								"shippingCompanyIdGoesHere",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Dashboard",
+			"item": [
+				{
+					"name": "All KPIs",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"year\" : \"2002\",\n    \"from\" : \"2002-02-02\",\n    \"to\" : null,\n    \"kpiFilter\" : [\"amountPlannedShipments\", \"amountShipments\" ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SERVER_URL}}:{{SERVER_PORT}}/api/companies/JM Testlogistik AG/kpis",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"port": "{{SERVER_PORT}}",
+							"path": [
+								"api",
+								"companies",
+								"JM Testlogistik AG",
+								"kpis"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Tour Data",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"date\" : \"2023-05-02\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{SERVER_URL}}:{{SERVER_PORT}}/api/companies/shippingCompanyId/tours",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"port": "{{SERVER_PORT}}",
+							"path": [
+								"api",
+								"companies",
+								"shippingCompanyId",
+								"tours"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{USER_FIREBASE_ID_TOKEN}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "SERVER_URL",
+			"value": "http://localhost",
+			"type": "string"
+		},
+		{
+			"key": "SERVER_PORT",
+			"value": "3000",
+			"type": "string"
+		},
+		{
+			"key": "FIREBASE_API_TOKEN",
+			"value": "AIzaSyCTcuV51Ej1SZb4O_HFj-2snsgutECf1b8",
+			"type": "string"
+		},
+		{
+			"key": "USER_FIREBASE_ID_TOKEN",
+			"value": ""
+		},
+		{
+			"key": "USER_ID",
+			"value": "3RjQDHtvCoTgApP4cRsIxpsU55n2",
+			"type": "string"
+		},
+		{
+			"key": "USER_EMAIL",
+			"value": "deleteme@test.com",
+			"type": "string"
+		},
+		{
+			"key": "USER_PASSWORD",
+			"value": "Postman123!",
+			"type": "string"
+		},
+		{
+			"key": "USER_CONFIRM_PASSWORD",
+			"value": "Postman123!",
+			"type": "string"
+		},
+		{
+			"key": "USER_DISPLAYNAME",
+			"value": "Delete Me User",
+			"type": "string"
+		},
+		{
+			"key": "SUPERADMIN_EMAIL",
+			"value": "admin@aluco.de",
+			"type": "string"
+		},
+		{
+			"key": "SUPERADMIN_PASSWORD",
+			"value": "6wdNMXYoRchGq1yltBEI",
+			"type": "string"
+		},
+		{
+			"key": "ADMIN_EMAIL",
+			"value": "admin@companyabcd.de",
+			"type": "string"
+		},
+		{
+			"key": "ADMIN_PASSWORD",
+			"value": "SecretPW123!",
+			"type": "string"
+		},
+		{
+			"key": "USER_ID_TO_DELETE",
+			"value": "3RjQDHtvCoTgApP4cRsIxpsU55n2",
+			"type": "string"
+		}
+	]
+}
